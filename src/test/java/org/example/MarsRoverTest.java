@@ -3,7 +3,7 @@ package org.example;
 import org.example.exception.ErrorMessageUtils;
 import org.example.exception.InvalidCardinalDirectionException;
 import org.example.exception.InvalidMoveException;
-import org.example.exception.OutOfBoundsMoveException;
+import org.example.exception.OutOfBoundsException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ public class MarsRoverTest {
     }
 
     @Test
-    public void testSuccess() throws InvalidCardinalDirectionException, OutOfBoundsMoveException, InvalidMoveException, IOException {
+    public void testSuccess() throws InvalidCardinalDirectionException, OutOfBoundsException, InvalidMoveException, IOException {
         Assertions.assertEquals(
                 List.of("1 3 N", "5 1 E"),
                 MarsRover.processRoverData(TEST_RESOURCES_PATH + "rover-info.txt"));
@@ -47,7 +47,7 @@ public class MarsRoverTest {
     }
 
     @Test
-    public void testNoMovesForRoverProvidedFail() throws InvalidCardinalDirectionException, OutOfBoundsMoveException, InvalidMoveException, IOException {
+    public void testNoMovesForRoverProvidedFail() throws InvalidCardinalDirectionException, OutOfBoundsException, InvalidMoveException, IOException {
         IOException ioException = Assertions.assertThrows(
                 IOException.class,
                 () -> MarsRover.processRoverData(TEST_RESOURCES_PATH + "rover-info-no-moves-for-rover.txt"));
@@ -58,14 +58,14 @@ public class MarsRoverTest {
     @Test
     public void testRover1outOfBoundsFail() {
         Assertions.assertThrows(
-                OutOfBoundsMoveException.class,
+                OutOfBoundsException.class,
                 () -> MarsRover.getFinalPosition("5 5 N", "M"));
     }
 
     @Test
     public void testRover2outOfBoundsFail() {
         Assertions.assertThrows(
-                OutOfBoundsMoveException.class,
+                OutOfBoundsException.class,
                 () -> MarsRover.getFinalPosition("0 0 N", "RRM"));
     }
 

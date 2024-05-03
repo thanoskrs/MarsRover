@@ -3,7 +3,7 @@ package org.example;
 import org.example.exception.ErrorMessageUtils;
 import org.example.exception.InvalidCardinalDirectionException;
 import org.example.exception.InvalidMoveException;
-import org.example.exception.OutOfBoundsMoveException;
+import org.example.exception.OutOfBoundsException;
 import org.example.position.RoverPosition;
 
 import java.io.BufferedReader;
@@ -18,7 +18,7 @@ public class MarsRover {
     public static int boundX;
     public static int boundY;
 
-    public static void main(String[] args) throws InvalidCardinalDirectionException, IOException, OutOfBoundsMoveException, InvalidMoveException {
+    public static void main(String[] args) throws InvalidCardinalDirectionException, IOException, OutOfBoundsException, InvalidMoveException {
 
         processRoverData("src/main/resources/input/rover-info.txt")
                 .forEach(System.out::println);
@@ -34,12 +34,12 @@ public class MarsRover {
      * @param fileName  The file name of the txt with rovers' data.
      * @return  A {@link List<String>} containing the last position of each rover.
      * @throws InvalidCardinalDirectionException If rover's cardinal direction is not 'N', 'E', 'S' or 'W'.
-     * @throws OutOfBoundsMoveException If a rover moves out of the rectangular.
+     * @throws OutOfBoundsException If a rover moves out of the rectangular.
      * @throws InvalidMoveException If a rover's move is not 'M', 'R' or 'L'.
      * @throws IOException  If an error occurs with the txt (e.g. does not exist, wrong file format).
      */
     public static List<String> processRoverData(String fileName)
-            throws InvalidCardinalDirectionException, OutOfBoundsMoveException, InvalidMoveException, IOException {
+            throws InvalidCardinalDirectionException, OutOfBoundsException, InvalidMoveException, IOException {
         List<String> roversFinalPosition = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -93,12 +93,12 @@ public class MarsRover {
      * @param roverCurrentPosition Τhe current rover's coordinates and cardinal direction.
      * @param roverMoves The desired moves that the rover will make.
      * @return The final rover position.
-     * @throws OutOfBoundsMoveException If the rover moves out the given space.
+     * @throws OutOfBoundsException If the rover moves out the given space.
      * @throws InvalidMoveException If any invalid move symbol is given.
      * @throws InvalidCardinalDirectionException If any invalid cardinal direction is given.
      */
     public static String getFinalPosition(String roverCurrentPosition, String roverMoves)
-            throws OutOfBoundsMoveException, InvalidMoveException, InvalidCardinalDirectionException {
+            throws OutOfBoundsException, InvalidMoveException, InvalidCardinalDirectionException {
 
         List<String> roverCurrentPositionList = Arrays.stream(roverCurrentPosition.split(" ")).toList();
 
@@ -106,6 +106,8 @@ public class MarsRover {
                 Integer.parseInt(roverCurrentPositionList.get(0)),
                 Integer.parseInt(roverCurrentPositionList.get(1)),
                 roverCurrentPositionList.get(2));
+
+        checkRoverPosition(roverPosition);
 
         for (char c : roverMoves.toCharArray()) {
             switch (c) {
@@ -122,13 +124,13 @@ public class MarsRover {
     /**
      * Decide the next move of the rover at the 2D dimensional space, based on the current
      * rover's ordinal direction.
-     * If the next move exceeds the given rectangular space, then throws {@link OutOfBoundsMoveException}.
+     * If the next move exceeds the given rectangular space, then throws {@link OutOfBoundsException}.
      *
      * @param roverPosition The current {@link RoverPosition roverPosition} of the rover.
-     * @throws OutOfBoundsMoveException If the rover moves out the given space.
+     * @throws OutOfBoundsException If the rover moves out the given space.
      */
     private static void decideNextMove(RoverPosition roverPosition)
-            throws OutOfBoundsMoveException {
+            throws OutOfBoundsException {
 
         switch (roverPosition.getCurrentCardinalDirection()) {
             case "N" -> roverPosition.increaseY();
@@ -137,11 +139,20 @@ public class MarsRover {
             case "W" -> roverPosition.decreaseX();
         }
 
-        if (roverPosition.getX() < 0 || roverPosition.getX() > boundX
-                || roverPosition.getY() < 0 ||roverPosition.getY() > boundY) {
-            throw new OutOfBoundsMoveException();
-        }
+        checkRoverPosition(roverPosition);
     }
 
+    /**
+     * Validate that the rover is inside the given rectangular.
+     *
+     * @param roverPosition The rover's position.
+     * @throws OutOfBoundsException If rover exceeds the bounds.
+     */
+    private static void checkRoverPosition(RoverPosition roverPosition) throws OutOfBoundsException {
+        if (roverPosition.getX() < 0 || roverPosition.getX() > boundX
+                || roverPosition.getY() < 0 ||roverPosition.getY() > boundY) {
+            throw new OutOfBoundsException();
+        }
+    }
 
 }
