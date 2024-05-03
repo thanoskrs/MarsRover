@@ -84,6 +84,10 @@ public class MarsRover {
 
         boundX = Integer.parseInt(boundaries[0]);
         boundY = Integer.parseInt(boundaries[1]);
+
+        if (boundX < 0 || boundY < 0) {
+            throw new IOException(ErrorMessageUtils.ERROR_NEGATIVE_COORDINATES);
+        }
     }
 
     /**
