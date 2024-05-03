@@ -5,7 +5,7 @@ import org.example.exception.InvalidCardinalDirectionException;
 import org.example.exception.InvalidMoveException;
 import org.example.exception.OutOfBoundsMoveException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -15,8 +15,8 @@ public class MarsRoverTest {
 
     private static final String TEST_RESOURCES_PATH = "src/test/resources/input/";
 
-    @BeforeAll
-    public static void initBounds() {
+    @BeforeEach
+    public void initBounds() {
         MarsRover.boundX = 5;
         MarsRover.boundY = 5;
     }
